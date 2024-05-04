@@ -1,24 +1,25 @@
-const getTodos = (callback) => {
-    const request = new XMLHttpRequest();
-    request.addEventListener('readystatechange', () => {
-        if (request.readyState === 4) {
-            if (request.status === 200) {
-                const data = JSON.parse(request.responseText);
-                callback(undefined, data);
-            } else {
-                callback('could not fetch the data', undefined);
-            }
-        }
-    });
-    request.open('GET', 'todos.json');
-    request.send();
-}
-
-getTodos((error, data) => {
-    console.log('callback function fired');
-    if (error) {
-        console.log(error);
-    } else if (data) {
-        console.log(data);
+const getTodos = (resource, callback) => {
+  const request = new XMLHttpRequest();
+  request.addEventListener("readystatechange", () => {
+    if (request.readyState === 4) {
+      if (request.status === 200) {
+        const data = JSON.parse(request.responseText);
+        callback(data);
+      } else {
+        callback("could not fetch the data from " + resource);
+      }
     }
+  });
+  request.open("GET", resource);
+  request.send();
+};
+
+getTodos("./todos/luigi.json", (data) => {
+  console.log(data);
+  getTodos("./todos/mario.json", (data) => {
+    console.log(data);
+    getTodos("./todos/shaun.json", (data) => {
+      console.log(data);
+    });
+  });
 });
